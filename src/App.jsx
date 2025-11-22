@@ -9,6 +9,8 @@ function App() {
   const [city, setCity] = useState("")
   const [wind, setWind] = useState(0);
   const [inputValue, setInputValue] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+
 
   const API_KEY = import.meta.env.VITE_API_KEY;
 
@@ -17,6 +19,7 @@ function App() {
   const GEOCODING = `https://api.api-ninjas.com/v1/geocoding?city=${city}`;
   
   async function fetchGeo() {
+    setIsLoading(true);
     try {
       // --- 1. Geocoding API call ---
       const geoRes = await fetch(GEOCODING, {
@@ -56,6 +59,8 @@ function App() {
       }
     } catch (err) {
       console.error(err);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -93,7 +98,9 @@ function App() {
             setCity(inputValue);
           }}>Search</button>
       </div>
-      {temp && city ? (
+      {isLoading ? (
+        <h1 className='text-xl animate-pulse'>Loading weather data...</h1>
+      ) : temp && city ? (
         <div className='flex flex-col justify-center items-center space-y-5 outline-1 outline-indigo-600 p-5 w-[80%] md:w-[30%] rounded-lg'>
           <h1 className='text-6xl'>{temp >= 15 ? "☀️" : "❄️"}</h1>
           <h2 className='text-2xl'>
@@ -106,7 +113,6 @@ function App() {
       ) : (
         <h1>Please type a city</h1>
       )}
-
     </div>
   )
 }
