@@ -7,6 +7,8 @@ function App() {
   const [longitude, setLongitude] = useState(0);
   const [temp, setTemp] = useState(0);
   const [city, setCity] = useState("")
+  const [wind, setWind] = useState(0);
+  const [inputValue, setInputValue] = useState("")
 
   const API_KEY = import.meta.env.VITE_API_KEY;
 
@@ -41,7 +43,9 @@ function App() {
 
           if (weatherData) {
             const temp = weatherData['temp'];
+            const wind = weatherData['wind_speed'];
             setTemp(temp);
+            setWind(wind);
 
             console.log("temp:",temp);
           }
@@ -55,13 +59,19 @@ function App() {
     }
   }
 
+  useEffect(() => {
+    if (city) {
+      fetchGeo();
+    }
+  }, [city]);
+
   // async function fetchWeather(lat, lon) {
   //   if (!latitude || !longitude) return;
 
   //     }
 
   const handleChange = (e) => {
-    setCity(e.target.value); // update state on every keystroke
+    setInputValue(e.target.value);
   };
 
   const handleSubmit = () => {
@@ -71,19 +81,26 @@ function App() {
   
   return (
     <div className='flex flex-col justify-center items-center h-screen space-y-5'>
-      <div className='flex flex-row justify-center items-center gap-2'>
-        <input onChange={handleChange} type="text" value={city} className='outline-1 outline-black' placeholder='Enter city...' />
+      <div className='flex flex-col md:flex-row justify-center items-center gap-2 '>
+        <input 
+          onChange={handleChange} 
+          type="text" 
+          value={inputValue}  // Change from city to inputValue
+          className='outline-1 outline-black rounded-lg p-2' 
+          placeholder='Enter city...' 
+        />        
         <button className='bg-indigo-600 px-7 py-3 hover:bg-indigo-400 hover:cursor-pointer text-white rounded-full' onClick={() => {
-          handleSubmit;
-          fetchGeo();
-        }}>Search</button>
+            setCity(inputValue);
+          }}>Search</button>
       </div>
       {temp && city ? (
-        <div className='flex flex-col justify-center items-center space-y-5'>
+        <div className='flex flex-col justify-center items-center space-y-5 outline-1 outline-indigo-600 p-5 w-[80%] md:w-[30%] rounded-lg'>
           <h1 className='text-6xl'>{temp >= 15 ? "☀️" : "❄️"}</h1>
           <h2 className='text-2xl'>
             {city} {temp}°C{" "}
-            
+          </h2>
+          <h2 className='text-2xl'>
+            💨 {wind}
           </h2>
         </div>
       ) : (
