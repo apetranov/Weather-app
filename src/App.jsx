@@ -14,7 +14,7 @@ function App() {
 
   const GEOCODING = `https://api.api-ninjas.com/v1/geocoding?city=${city}`;
   
-  async function fetchGeo(city) {
+  async function fetchGeo() {
     try {
       // --- 1. Geocoding API call ---
       const geoRes = await fetch(GEOCODING, {
